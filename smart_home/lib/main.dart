@@ -56,11 +56,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _lamp1(status) async {
-    // final response = await http
-    //     .post("http://192.168.43.181/api_eschool/index.php/api/login", body: {
-    //   "devices": "ac",
-    //   "status": status,
-    // });
+    final response = await http.post(
+        "http://192.168.43.181/test_programming/welcome/index.php/api_post_smart_home",
+        body: {
+          "id": "3",
+          "status": status,
+          "txt_devices": "status_lampu_1",
+        });
     print("post status lamp1 " + status);
   }
 
