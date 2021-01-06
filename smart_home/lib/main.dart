@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
@@ -31,83 +33,108 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  static String url =
+      "http://192.168.43.181/test_programming/index.php/Welcome/api_smart";
   // ignore: non_constant_identifier_names
-  bool isSwitched_Lamp1 = false;
-  // ignore: non_constant_identifier_names
-  bool isSwitched_lamp2 = false;
-  // ignore: non_constant_identifier_names
-  bool isSwitched_lamp3 = false;
-  // ignore: non_constant_identifier_names
-  bool isSwitched_speaker = false;
-  // ignore: non_constant_identifier_names
-  bool isSwitched_tv = false;
-  // ignore: non_constant_identifier_names
-  bool isSwitched_ac = false;
-  // ignore: non_constant_identifier_names
-  bool isSwitched_wifi = false;
+  static String url_post_1 =
+      "http://192.168.43.181/test_programming/index.php/welcome/api_post_smart_home";
+  // ignore: unused_field
+  static String url_post_2 =
+      "http://10.0.2.2/test_programming/index.php/welcome/api_post_smart_home";
+  Future _load() async {
+    final response = await http.post(url);
+
+    String responseBody = response.body;
+    var jsonBody = json.decode(responseBody);
+    if (response.statusCode == 200 && jsonBody == "0") {
+      setState(() {});
+    } else if (response.statusCode == 200) {
+      setState(() {
+        tv_stat = int.parse(jsonBody[0]);
+        ac_stat = int.parse(jsonBody[1]);
+        lamp1_stat = int.parse(jsonBody[2]);
+        lamp2_stat = int.parse(jsonBody[3]);
+        lamp3_stat = int.parse(jsonBody[4]);
+        speaker_stat = int.parse(jsonBody[5]);
+        wifi_stat = int.parse(jsonBody[6]);
+      });
+    }
+  }
+
+  int tv_stat = 0;
+  int ac_stat = 0;
+  int lamp1_stat = 0;
+  int lamp2_stat = 0;
+  int lamp3_stat = 0;
+  int speaker_stat = 0;
+  int wifi_stat = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
 
   _ac(status) async {
-    // final response = await http
-    //     .post("http://192.168.43.181/api_eschool/index.php/api/login", body: {
-    //   "devices": "ac",
-    //   "status": status,
-    // });
+    await http.post(url_post_1, body: {
+      "id": "2",
+      "status": status,
+      "txt_devices": "status_ac",
+    });
     print("post status ac " + status);
   }
 
   _lamp1(status) async {
-    final response = await http.post(
-        "http://192.168.43.181/test_programming/welcome/index.php/api_post_smart_home",
-        body: {
-          "id": "3",
-          "status": status,
-          "txt_devices": "status_lampu_1",
-        });
+    await http.post(url_post_1, body: {
+      "id": "3",
+      "status": status,
+      "txt_devices": "status_lampu_1",
+    });
     print("post status lamp1 " + status);
   }
 
   _lamp2(status) async {
-    // final response = await http
-    //     .post("http://192.168.43.181/api_eschool/index.php/api/login", body: {
-    //   "devices": "ac",
-    //   "status": status,
-    // });
+    await http.post(url_post_1, body: {
+      "id": "4",
+      "status": status,
+      "txt_devices": "status_lampu_2",
+    });
     print("post status lamp2 " + status);
   }
 
   _lamp3(status) async {
-    // final response = await http
-    //     .post("http://192.168.43.181/api_eschool/index.php/api/login", body: {
-    //   "devices": "ac",
-    //   "status": status,
-    // });
+    await http.post(url_post_1, body: {
+      "id": "5",
+      "status": status,
+      "txt_devices": "status_lampu_3",
+    });
     print("post status lamp3 " + status);
   }
 
   _tv(status) async {
-    // final response = await http
-    //     .post("http://192.168.43.181/api_eschool/index.php/api/login", body: {
-    //   "devices": "ac",
-    //   "status": status,
-    // });
+    await http.post(url_post_1, body: {
+      "id": "1",
+      "status": status,
+      "txt_devices": "status_tv",
+    });
     print("post status tv " + status);
   }
 
   _speaker(status) async {
-    // final response = await http
-    //     .post("http://192.168.43.181/api_eschool/index.php/api/login", body: {
-    //   "devices": "ac",
-    //   "status": status,
-    // });
+    await http.post(url_post_1, body: {
+      "id": "6",
+      "status": status,
+      "txt_devices": "status_speaker",
+    });
     print("post status speaker " + status);
   }
 
   _wifi(status) async {
-    // final response = await http
-    //     .post("http://192.168.43.181/api_eschool/index.php/api/login", body: {
-    //   "devices": "ac",
-    //   "status": status,
-    // });
+    await http.post(url_post_1, body: {
+      "id": "7",
+      "status": status,
+      "txt_devices": "status_wifi",
+    });
     print("post status wifi " + status);
   }
 
@@ -256,12 +283,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Container(
                                     width: 60,
                                     child: Switch(
-                                      value: isSwitched_Lamp1,
+                                      value: lamp1_stat == 0 ? false : true,
                                       onChanged: (value) {
                                         setState(() {
-                                          isSwitched_Lamp1 = value;
+                                          lamp1_stat = value == true ? 1 : 0;
                                         });
-                                        if (isSwitched_Lamp1 == true) {
+                                        if (lamp1_stat == 1) {
                                           String status = "1";
                                           _lamp1(status);
                                         } else {
@@ -309,12 +336,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Container(
                                     width: 60,
                                     child: Switch(
-                                      value: isSwitched_lamp2,
+                                      value: lamp2_stat == 0 ? false : true,
                                       onChanged: (value) {
                                         setState(() {
-                                          isSwitched_lamp2 = value;
+                                          lamp2_stat = value == true ? 1 : 0;
                                         });
-                                        if (isSwitched_lamp2 == true) {
+                                        if (lamp2_stat == 1) {
                                           String status = "1";
                                           _lamp2(status);
                                         } else {
@@ -363,12 +390,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Container(
                                     width: 60,
                                     child: Switch(
-                                      value: isSwitched_lamp3,
+                                      value: lamp3_stat == 0 ? false : true,
                                       onChanged: (value) {
                                         setState(() {
-                                          isSwitched_lamp3 = value;
+                                          lamp3_stat = value == true ? 1 : 0;
                                         });
-                                        if (isSwitched_lamp3 == true) {
+                                        if (lamp3_stat == 1) {
                                           String status = "1";
                                           _lamp3(status);
                                         } else {
@@ -441,12 +468,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                         Container(
                                           width: 60,
                                           child: Switch(
-                                            value: isSwitched_speaker,
+                                            value: speaker_stat == 0
+                                                ? false
+                                                : true,
                                             onChanged: (value) {
                                               setState(() {
-                                                isSwitched_speaker = value;
+                                                speaker_stat =
+                                                    value == true ? 1 : 0;
                                               });
-                                              if (isSwitched_speaker == true) {
+                                              if (speaker_stat == 1) {
                                                 String status = "1";
                                                 _speaker(status);
                                               } else {
@@ -516,12 +546,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                         Container(
                                           width: 60,
                                           child: Switch(
-                                            value: isSwitched_tv,
+                                            value: tv_stat == 0 ? false : true,
                                             onChanged: (value) {
                                               setState(() {
-                                                isSwitched_tv = value;
+                                                tv_stat = value == true ? 1 : 0;
                                               });
-                                              if (isSwitched_tv == true) {
+                                              if (tv_stat == 1) {
                                                 String status = "1";
                                                 _tv(status);
                                               } else {
@@ -605,12 +635,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                     Container(
                                       width: 60,
                                       child: Switch(
-                                        value: isSwitched_ac,
+                                        value: ac_stat == 0 ? false : true,
                                         onChanged: (value) {
                                           setState(() {
-                                            isSwitched_ac = value;
+                                            ac_stat = value == true ? 1 : 0;
                                           });
-                                          if (isSwitched_ac == true) {
+                                          if (ac_stat == 1) {
                                             String status = "1";
                                             _ac(status);
                                           } else {
@@ -684,12 +714,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                     Container(
                                       width: 60,
                                       child: Switch(
-                                        value: isSwitched_wifi,
+                                        value: wifi_stat == 0 ? false : true,
                                         onChanged: (value) {
                                           setState(() {
-                                            isSwitched_wifi = value;
+                                            wifi_stat = value == true ? 1 : 0;
                                           });
-                                          if (isSwitched_wifi == true) {
+                                          if (wifi_stat == 1) {
                                             String status = "1";
                                             _wifi(status);
                                           } else {
